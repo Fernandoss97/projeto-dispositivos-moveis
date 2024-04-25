@@ -1,34 +1,53 @@
-import { View, StyleSheet} from "react-native";
-import { useState } from "react";
-import { TextInput, Button, Text } from "react-native-paper";
+import React from 'react';
+import {View, StyleSheet} from 'react-native';
+import {TextInput, Text} from 'react-native-paper';
 
-const Input = (props) => {
-  const labelName = props.labelName
-  const placeholder = props.placeholder
-  const iconName = props.iconName
-
-  return(
+const Input = ({
+  labelName,
+  iconName,
+  onChangeText,
+  value,
+  errorMessage,
+  iconRightName,
+}) => {
+  return (
     <View>
       <Text style={styles.text}>{labelName}</Text>
-      <TextInput style={styles.textInput} mode="outlined" placeholder={placeholder} left={<TextInput.Icon name={iconName} />}/>
+      <TextInput
+        style={styles.textInput}
+        onChangeText={onChangeText}
+        value={value}
+        mode="outlined"
+        right={
+          iconRightName && (
+            <TextInput.Icon color={'#CAC6C5'} icon={iconRightName} />
+          )
+        }
+        left={<TextInput.Icon name={iconName} />}
+      />
+      {!!errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
     </View>
-
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
-  text:{
+  text: {
     fontSize: 15,
     color: 'white',
-    fontFamily: 'AveriaLibre-Regular'
+    fontFamily: 'AveriaLibre-Regular',
+    marginBottom: 4,
   },
-  textInput:{
+  textInput: {
     color: '#3F92C5',
     height: 40,
-    marginBottom: 8,
     fontFamily: 'AveriaLibre-Regular',
-    backgroundColor: '#FFFFFF'
-  }
-})
+    backgroundColor: '#FFFFFF',
+  },
+  error: {
+    fontFamily: 'AveriaLibre-Regular',
+    color: '#FD7979',
+    fontSize: 20,
+  },
+});
 
-export default Input
+export default Input;

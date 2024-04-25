@@ -1,117 +1,141 @@
-import { View, StyleSheet, Image} from "react-native";
-import { useState } from "react";
-import { PaperProvider, MD3LightTheme as DefaultTheme } from "react-native-paper"
-import { TextInput, Text, Button } from "react-native-paper";
-import Input from "../components/Input";
-import Icon from "react-native-vector-icons/MaterialIcons"
+import {View, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
+import {TextInput, Text, Button} from 'react-native-paper';
+import Input from '../components/Input';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const theme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: 'white',
-    secondary: 'yellow'
-  }
-}
+const NewSurvey = () => {
+  const [name, setName] = useState('');
+  const [date, setDate] = useState('');
+  const [nameError, setNameError] = useState(false);
+  const [dateError, setDateError] = useState(false);
 
-const ModifySurvey = ()=> {
-  return(
-    <PaperProvider >
-      <View style={styles.ctBackground}>
-          <View style={styles.ctInput} >
-            <Input labelName='Nome' placeholder='Carnaval 2024'></Input>
-            
-            <View style={styles.ctData}>
-              <Input labelName='Data' placeholder='16/02/2024'></Input>
-              <Icon style={styles.icon} name='calendar-month' size={30} color="white"/>
-            </View>
-            
-            <Text  style={styles.textImg}>Imagem</Text>
-            <Image  source={require('../Images/Group10.jpg')} style={styles.Image}/>
+  const register = () => {
+    if (date.length > 0) {
+      setDateError(false);
+    } else {
+      setDateError(true);
+    }
+    if (name.length > 0) {
+      setNameError(false);
+    } else {
+      setNameError(true);
+    }
+  };
+  return (
+    <View style={styles.ctBackground}>
+      <View style={styles.ctInput}>
+        <Input
+          labelName="Nome"
+          onChangeText={setName}
+          value={name}
+          errorMessage={nameError && 'Preencha o nome da pesquisa'}
+        />
 
-            <View style={styles.ctIcon}>
-              <Button style={styles.buttonRec} mode="contained" labelStyle=  {{fontFamily: 'AveriaLibre-Regular', color: '#FFFFFF'}}>
-              SALVAR
-              </Button>
-              <Icon style={styles.iconDelete} name='delete' size={50} color="white"/>
-            </View>
-            
+        <View style={styles.ctData}>
+          <Input
+            labelName="Data"
+            onChangeText={setDate}
+            value={date}
+            errorMessage={dateError && 'Preencha a data'}
+            iconRightName={'calendar-month'}
+          />
+        </View>
+
+        <Text style={styles.textImg}>Imagem</Text>
+        <TextInput
+          style={styles.inputImg}
+          placeholder="Câmera/Galeria de imagens"
+          placeholderStyle={styles.placeholderStyle}
+        />
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{flex: 1}}>
+            <Button
+              onPress={register}
+              style={styles.buttonRec}
+              mode="contained"
+              labelStyle={{
+                fontFamily: 'AveriaLibre-Regular',
+                color: '#FFFFFF',
+              }}>
+              CADASTRAR
+            </Button>
           </View>
-        
+          <View style={{alignItems: 'center', marginLeft: 8}}>
+            <Icon
+              style={styles.iconDelete}
+              name="delete"
+              size={30}
+              color="white"
+            />
+            <Text style={styles.textIcon}>Apagar</Text>
+          </View>
+        </View>
       </View>
-    </PaperProvider>
-  )
-}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-  iconDelete:{
-    position: 'relative',
-    left: 80
+  placeholderStyle: {
+    fontFamily: 'AveriaLibre-Regular',
   },
-  Image:{
-    width: 250,
-    height: 80,
-    //borderRadius: 50
+  inputImg: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 0,
+    height: 60,
+    width: 300,
   },
-  ctData:{
+  ctData: {
     justifyContent: 'center',
-    alignItems: 'centers'
+    alignItems: 'centers',
     //flexDirection: 'row',
     //borderBottomWidth: 1,
     //borderColor: '#000',
     //paddingBottom: 10,
   },
-  inputDate:{
+  inputDate: {
     //flex: 1
   },
-  icon:{
+  icon: {
     position: 'absolute',
     right: 10,
-    color: '#CAC6C5'
+    color: '#CAC6C5',
   },
-  ctInput:{
+  ctInput: {
     //flex: 0.25
   },
-  ctBackground:{
+  ctBackground: {
     flex: 1,
     flexDirection: 'column',
     backgroundColor: '#372775',
-    paddingHorizontal: 150,
-    paddingVertical: 10
+    paddingHorizontal: 16,
+    paddingVertical: 16,
   },
-  ctButton:{
-    marginTop: 80
+  ctButton: {
+    marginTop: 80,
   },
-  text:{
+  text: {
     fontFamily: 'AveriaLibre-Regular',
     color: '#FD7979',
-    fontSize: 14
+    fontSize: 14,
   },
-  buttonRec:{
+  textIcon: {
+    fontFamily: 'AveriaLibre-Regular',
+    color: 'white',
+    fontSize: 14,
+  },
+  buttonRec: {
     borderRadius: 0,
     fontFamily: 'AveriaLibre-Regular',
     backgroundColor: '#37BD6D',
-    width: 511,
-    height: 50
+    marginTop: 15,
   },
-  ctIcon:{
-    flexDirection: 'row',
-    marginTop: 15
-    
-  },
-  textImg:{
+  textImg: {
     fontFamily: 'AveriaLibre-Regular',
     fontSize: 15,
     color: 'white',
   },
-  inputImg:{
-    backgroundColor: '#FFFFFF',
-    borderRadius: 0,
-    height: 60,
-    width: 300,
-    
-  },
-  
-})
+});
 
-export default ModifySurvey
+export default NewSurvey;

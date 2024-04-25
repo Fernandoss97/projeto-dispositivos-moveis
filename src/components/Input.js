@@ -5,11 +5,12 @@ import { TextInput, Button, Text } from "react-native-paper";
 const Input = (props) => {
   const labelName = props.labelName
   const placeholder = props.placeholder
+  const iconName = props.iconName
 
   return(
     <View>
       <Text style={styles.text}>{labelName}</Text>
-      <TextInput style={styles.textInput} mode="outlined" placeholder={placeholder}/>
+      <TextInput style={styles.textInput} mode="outlined" placeholder={placeholder} left={<TextInput.Icon name={iconName} />}/>
     </View>
 
   )

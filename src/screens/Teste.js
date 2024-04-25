@@ -29,6 +29,18 @@ const App = () => {
 
 
       <Text style={estilos.texto}>{txtImc}</Text>
+
+      <TouchableOpacity onPress={goToModifySurvey}>
+              <Image  source={require('../Images/Group1.jpg')} style={styles.Image}/>
+            </TouchableOpacity>
+            
+            <TouchableOpacity onPress={goToModifySurvey}>
+              <Image  source={require('../Images/Group2.jpg')} style={styles.Image}/>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={goToModifySurvey}>
+              <Image  source={require('../Images/Group3.jpg')} style={styles.Image}/>
+            </TouchableOpacity>
     </View>
 
   )

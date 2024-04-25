@@ -25,7 +25,7 @@ const Login = (props)=> {
   }
 
   const goToHome = () => {
-    props.navigation.navigate('Home')
+    props.navigation.navigate('Drawer')
   }
 
   return(
@@ -39,6 +39,7 @@ const Login = (props)=> {
         <View style={style.ctInput}>
           <Input labelName='E-mail' placeholder='jurandir.pereira@hotmail.com'></Input>
           <Input style={style.ctInput} labelName='Senha' placeholder=''></Input>
+          <Text style={style.text}>E-mail e/ou senha inválidos.</Text>
           <Button style={style.buttonEntrar} onPress={goToHome} mode="contained" labelStyle=  {{fontFamily: 'AveriaLibre-Regular', color: '#FFFFFF'}}>
           Entrar
           </Button>
@@ -61,7 +62,11 @@ const Login = (props)=> {
 }
 
 const style = StyleSheet.create({
-  
+  text:{
+    fontFamily: 'AveriaLibre-Regular',
+    color: '#FD7979',
+    fontSize: 20
+  },
   background: {
     backgroundColor: '#372775',
     flex:1,

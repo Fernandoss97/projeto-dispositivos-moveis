@@ -9,6 +9,7 @@ const Input = ({
   value,
   errorMessage,
   iconRightName,
+  typePassword,
 }) => {
   return (
     <View>
@@ -24,6 +25,7 @@ const Input = ({
           )
         }
         left={<TextInput.Icon name={iconName} />}
+        secureTextEntry={typePassword}
       />
       {!!errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
     </View>

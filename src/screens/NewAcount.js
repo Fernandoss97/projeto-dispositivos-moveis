@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {Button} from 'react-native-paper';
+import {Text, Button} from 'react-native-paper';
 import Input from '../components/Input';
+import {auth_mod} from '../firebase/config';
+import {createUserWithEmailAndPassword} from 'firebase/auth';
 
 const NewAcount = props => {
   const [email, setEmail] = useState('');
@@ -29,21 +31,37 @@ const NewAcount = props => {
       setErrorMessage('');
     }
   };
+
+  const registerUser = () => {
+    createUserWithEmailAndPassword(auth_mod, email, password)
+      .then(() => {
+        goToHome();
+      })
+      .catch(err => {
+        setErrorMessage(err.customData['_tokenResponse'].error.message);
+      });
+  };
+
   return (
     <View style={styles.ctBackground}>
       <View>
         <Input labelName="E-mail" value={email} onChangeText={setEmail} />
-        <Input labelName="Senha" onChangeText={setPassword} />
+        <Input
+          labelName="Senha"
+          onChangeText={setPassword}
+          typePassword={true}
+        />
         <Input
           labelName="Repetir senha"
           onChangeText={setConfirmPassword}
           errorMessage={errorMessage}
+          typePassword={true}
         />
         <View style={styles.ctButton}>
           <Button
             style={styles.buttonCad}
             mode="contained"
-            onPress={goToHome}
+            onPress={registerUser}
             labelStyle={{fontFamily: 'AveriaLibre-Regular', color: '#FFFFFF'}}>
             CADASTRAR
           </Button>

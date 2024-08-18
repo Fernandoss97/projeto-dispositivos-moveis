@@ -1,21 +1,57 @@
-import React from 'react';
-import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import React, {useEffect, useMemo} from 'react';
+import {
+  View,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
 import {useState} from 'react';
 import {PaperProvider, MD3LightTheme as DefaultTheme} from 'react-native-paper';
 import {TextInput, Text, Button, Searchbar} from 'react-native-paper';
-import Input from '../components/Input';
+import firestore from '@react-native-firebase/firestore';
+
 import Card from '../components/Card';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Home = props => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [surveys, setSurveys] = useState([]);
+
+  const filteredSurveys = useMemo(() => {
+    if (!searchQuery) {
+      return surveys;
+    }
+    return surveys.filter(item => {
+      return item.name.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+  }, [surveys, searchQuery]);
 
   const goToNewSurvey = () => {
     props.navigation.navigate('Nova pesquisa');
   };
 
-  const goToActions = () => {
-    props.navigation.navigate('Carnaval');
+  const goToActions = item => {
+    props.navigation.navigate('Carnaval', item);
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      firestore()
+        .collection('survey')
+        .get()
+        .then(querySnapshot => {
+          let surveysArray = [];
+          querySnapshot.forEach(documentSnapshot => {
+            surveysArray = [
+              ...surveysArray,
+              {id: documentSnapshot.id, ...documentSnapshot.data()},
+            ];
+          });
+          setSurveys(surveysArray);
+        });
+    }, []),
+  );
 
   return (
     <PaperProvider>
@@ -33,33 +69,22 @@ const Home = props => {
             value={searchQuery}
           />
 
-          <View style={styles.ctCard}>
-            <TouchableOpacity onPress={goToActions}>
-              <Card
-                title="SECOMP 2023"
-                date="10/10/2023"
-                style={{marginRight: 16}}
-                imageUrl="https://techservices.illinois.edu/wp-content/uploads/2021/08/computer-lab-icon-2-1024x1024.jpg"
-              />
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={goToActions}>
-              <Card
-                title="UBUNTU 2022"
-                date="05/06/2022"
-                style={{marginRight: 16}}
-                imageUrl="https://i.fbcd.co/products/resized/resized-750-500/7cc2c65db340c02bf4d492614b276a8dc450351f2e1a7b954d9ec0efb12e3e7a.jpg"
-              />
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={goToActions}>
-              <Card
-                title="MENINAS CPU"
-                date="01/04/2022"
-                imageUrl="https://t4.ftcdn.net/jpg/01/09/46/77/360_F_109467715_Kwj7MaQhjS8LQNURNzsxugVp2n72Xylh.jpg"
-              />
-            </TouchableOpacity>
-          </View>
+          <FlatList
+            data={filteredSurveys}
+            horizontal
+            renderItem={({item}) => {
+              return (
+                <TouchableOpacity onPress={() => goToActions(item)}>
+                  <Card
+                    title={item.name}
+                    date={item.date}
+                    style={{marginRight: 16}}
+                    imageUrl="https://techservices.illinois.edu/wp-content/uploads/2021/08/computer-lab-icon-2-1024x1024.jpg"
+                  />
+                </TouchableOpacity>
+              );
+            }}
+          />
 
           <Button
             onPress={goToNewSurvey}

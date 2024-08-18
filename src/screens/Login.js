@@ -11,8 +11,8 @@ import Input from '../components/Input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Login = props => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('email@email.com');
+  const [password, setPassword] = useState('1234');
   const [error, setError] = useState(false);
 
   const goToNewAcount = () => {

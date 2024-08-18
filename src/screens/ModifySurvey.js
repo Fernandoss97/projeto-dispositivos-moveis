@@ -3,23 +3,41 @@ import React, {useState} from 'react';
 import {TextInput, Text, Button} from 'react-native-paper';
 import Input from '../components/Input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
 
 const NewSurvey = () => {
-  const [name, setName] = useState('');
-  const [date, setDate] = useState('');
+  const {params} = useRoute();
+  const navigation = useNavigation();
+
+  const [name, setName] = useState(params.name);
+  const [date, setDate] = useState(params.date);
+
   const [nameError, setNameError] = useState(false);
   const [dateError, setDateError] = useState(false);
 
   const register = () => {
+    let hasError = false;
     if (date.length > 0) {
       setDateError(false);
     } else {
+      hasError = true;
       setDateError(true);
     }
     if (name.length > 0) {
       setNameError(false);
     } else {
+      hasError = true;
       setNameError(true);
+    }
+    if (!hasError) {
+      firestore()
+        .collection('survey')
+        .doc(params.id)
+        .set({name, date})
+        .then(() => {
+          navigation.navigate('Home');
+        });
     }
   };
   return (
@@ -61,7 +79,17 @@ const NewSurvey = () => {
               CADASTRAR
             </Button>
           </View>
-          <View style={{alignItems: 'center', marginLeft: 8}}>
+          <View
+            onTouchEnd={() => {
+              firestore()
+                .collection('survey')
+                .doc(params.id)
+                .delete()
+                .then(() => {
+                  navigation.navigate('Home');
+                });
+            }}
+            style={{alignItems: 'center', marginLeft: 8}}>
             <Icon
               style={styles.iconDelete}
               name="delete"

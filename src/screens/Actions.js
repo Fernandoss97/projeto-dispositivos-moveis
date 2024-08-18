@@ -1,19 +1,26 @@
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
 const Actions = props => {
+  const {params} = useRoute();
+  const {setOptions} = useNavigation();
   const goToModifySurvey = () => {
-    props.navigation.navigate('Modificar pesquisa');
+    props.navigation.navigate('Modificar pesquisa', params);
   };
 
   const goToColect = () => {
-    props.navigation.navigate('Coletar');
+    props.navigation.navigate('Coletar', params);
   };
   const goToReports = () => {
-    props.navigation.navigate('Relatório');
+    props.navigation.navigate('Relatório', params);
   };
+
+  useEffect(() => {
+    setOptions({title: params.name});
+  });
   return (
     <View style={styles.ctBackground}>
       <View

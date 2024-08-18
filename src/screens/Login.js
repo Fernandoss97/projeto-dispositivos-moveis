@@ -25,7 +25,7 @@ const Login = props => {
 
   const dispatch = useDispatch();
 
-  const autenticar = () => {
+  const authenticate = () => {
     signInWithEmailAndPassword(auth_mod, email, password)
       .then(userLogged => {
         console.log(
@@ -75,7 +75,7 @@ const Login = props => {
           {error ? <Text style={style.text}>{error}</Text> : <Text></Text>}
           <Button
             style={style.buttonEntrar}
-            onPress={autenticar}
+            onPress={authenticate}
             mode="contained"
             labelStyle={{fontFamily: 'AveriaLibre-Regular', color: '#FFFFFF'}}>
             Entrar

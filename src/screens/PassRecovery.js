@@ -1,63 +1,88 @@
-import { View, StyleSheet} from "react-native";
-import { useState } from "react";
-import { PaperProvider, MD3LightTheme as DefaultTheme } from "react-native-paper"
-import { TextInput, Text, Button } from "react-native-paper";
-import Input from "../components/Input";
+import {useState} from 'react';
+import {View, StyleSheet} from 'react-native';
+import {PaperProvider, MD3LightTheme as DefaultTheme} from 'react-native-paper';
+import {Text, Button} from 'react-native-paper';
+import Input from '../components/Input';
+import {auth_mod} from '../firebase/config';
+import {sendPasswordResetEmail} from 'firebase/auth';
 
 const theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
     primary: 'white',
-    secondary: 'yellow'
-  }
-}
+    secondary: 'yellow',
+  },
+};
 
-const PassRecovery = ()=> {
-  return(
-    <PaperProvider >
+const PassRecovery = () => {
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+
+  const recoverPassword = () => {
+    sendPasswordResetEmail(auth_mod, email)
+      .then(() => {
+        setError('');
+      })
+      .catch(err => {
+        setError(err.code);
+      });
+  };
+
+  return (
+    <PaperProvider>
       <View style={styles.ctBackground}>
         <View style={styles.ctContent}>
-          <View style={styles.ctInput} >
-            <Input labelName='E-mail' placeholder='jurandir.pereira@hotmail.com'></Input>
-            <Text style={styles.text}>E-mail parece ser inválido</Text>
+          <View style={styles.ctInput}>
+            <Input
+              labelName="E-mail"
+              placeholder="jurandir.pereira@hotmail.com"
+              onChangeText={setEmail}></Input>
+            {error ? <Text style={styles.text}>{error}</Text> : <Text></Text>}
           </View>
           <View style={styles.ctButton}>
-            <Button style={styles.buttonRec} mode="contained" labelStyle=  {{fontFamily: 'AveriaLibre-Regular', color: '#FFFFFF'}}>
-            RECUPERAR
+            <Button
+              style={styles.buttonRec}
+              mode="contained"
+              labelStyle={{
+                fontFamily: 'AveriaLibre-Regular',
+                color: '#FFFFFF',
+              }}
+              onPress={recoverPassword}>
+              RECUPERAR
             </Button>
-            </View>
+          </View>
         </View>
       </View>
     </PaperProvider>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
-  ctInput:{
+  ctInput: {
     //flex: 0.25
   },
-  ctBackground:{
+  ctBackground: {
     flex: 1,
     flexDirection: 'column',
     backgroundColor: '#372775',
     paddingHorizontal: 100,
-    paddingVertical: 50
+    paddingVertical: 50,
   },
-  ctButton:{
-    marginTop: 80
+  ctButton: {
+    marginTop: 80,
   },
-  text:{
+  text: {
     fontFamily: 'AveriaLibre-Regular',
     color: '#FD7979',
-    fontSize: 20
+    fontSize: 20,
+    textAlign: 'center',
   },
-  buttonRec:{
+  buttonRec: {
     borderRadius: 0,
     fontFamily: 'AveriaLibre-Regular',
-    backgroundColor: '#37BD6D'
-  }
-  
-})
+    backgroundColor: '#37BD6D',
+  },
+});
 
-export default PassRecovery
+export default PassRecovery;

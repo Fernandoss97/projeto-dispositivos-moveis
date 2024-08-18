@@ -1,8 +1,7 @@
-import {View, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {useState} from 'react';
 import {PaperProvider, MD3LightTheme as DefaultTheme} from 'react-native-paper';
-import {TextInput, Text, Button, Searchbar} from 'react-native-paper';
-import Input from '../components/Input';
+import {Button, Searchbar} from 'react-native-paper';
 import Card from '../components/Card';
 
 const theme = {

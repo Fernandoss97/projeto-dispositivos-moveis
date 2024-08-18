@@ -1,120 +1,163 @@
-import { View, StyleSheet} from "react-native";
-import { useState } from "react";
-import { PaperProvider, MD3LightTheme as DefaultTheme } from "react-native-paper"
-import { TextInput, Text, Button } from "react-native-paper";
-import Input from "../components/Input";
-import Icon from "react-native-vector-icons/MaterialIcons"
+import {useState} from 'react';
+import {View, StyleSheet} from 'react-native';
+import {PaperProvider, MD3LightTheme as DefaultTheme} from 'react-native-paper';
+import {Text, Button} from 'react-native-paper';
+import Input from '../components/Input';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {auth_mod} from '../firebase/config';
+import {signInWithEmailAndPassword} from 'firebase/auth';
+import {useDispatch} from 'react-redux';
+import {reducerSetLogin} from '../redux/loginSlice';
 
 const theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
     primary: 'white',
-    secondary: 'yellow'
-  }
-}
+    secondary: 'yellow',
+  },
+};
 
-const Login = (props)=> {
+const Login = props => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(false);
+
+  const dispatch = useDispatch();
+
+  const autenticar = () => {
+    signInWithEmailAndPassword(auth_mod, email, password)
+      .then(userLogged => {
+        console.log(
+          'Usuário autenticado com sucesso! ' + JSON.stringify(userLogged),
+        );
+        dispatch(reducerSetLogin({email: email, password: password}));
+        setError(false);
+        props.navigation.navigate('Drawer');
+      })
+      .catch(err => {
+        console.log(err);
+        setError(err.code);
+      });
+  };
 
   const goToNewAcount = () => {
-    props.navigation.navigate('Nova Conta')
-  }
+    props.navigation.navigate('Nova Conta');
+    setError(false);
+  };
 
   const goToPassRecovery = () => {
-    props.navigation.navigate('Recuperação de senha')
-  }
+    props.navigation.navigate('Recuperação de senha');
+    setError(false);
+  };
 
-  const goToHome = () => {
-    props.navigation.navigate('Drawer')
-  }
-
-  return(
+  return (
     <PaperProvider theme={theme}>
       <View style={style.background}>
-        <View style={style.ctLogo}>  
+        <View style={style.ctLogo}>
           <Text style={style.txtLogo}>Satisfying.you</Text>
-          <Icon style={style.icon} name='mood' size={60} color="white"/>
+          <Icon style={style.icon} name="mood" size={60} color="white" />
         </View>
-        
+
         <View style={style.ctInput}>
-          <Input labelName='E-mail' placeholder='jurandir.pereira@hotmail.com'></Input>
-          <Input style={style.ctInput} labelName='Senha' placeholder=''></Input>
-          <Text style={style.text}>E-mail e/ou senha inválidos.</Text>
-          <Button style={style.buttonEntrar} onPress={goToHome} mode="contained" labelStyle=  {{fontFamily: 'AveriaLibre-Regular', color: '#FFFFFF'}}>
-          Entrar
+          <Input
+            labelName="E-mail"
+            placeholder="jurandir.pereira@hotmail.com"
+            onChangeText={setEmail}
+          />
+          <Input
+            style={style.ctInput}
+            labelName="Senha"
+            placeholder=""
+            typePassword={true}
+            onChangeText={setPassword}
+          />
+          {error ? <Text style={style.text}>{error}</Text> : <Text></Text>}
+          <Button
+            style={style.buttonEntrar}
+            onPress={autenticar}
+            mode="contained"
+            labelStyle={{fontFamily: 'AveriaLibre-Regular', color: '#FFFFFF'}}>
+            Entrar
           </Button>
         </View>
 
         <View style={style.ctButtons}>
-          <Button onPress={goToNewAcount} style={style.buttonCriar} mode="contained" labelStyle=  {{fontFamily:  'AveriaLibre-Regular', color: '#FFFFFF'}}>
+          <Button
+            onPress={goToNewAcount}
+            style={style.buttonCriar}
+            mode="contained"
+            labelStyle={{fontFamily: 'AveriaLibre-Regular', color: '#FFFFFF'}}>
             Criar minha conta
           </Button>
-          <Button onPress={goToPassRecovery} style={style.buttonEsq} mode="contained" labelStyle=  {{fontFamily:  'AveriaLibre-Regular', color: '#FFFFFF'}}>
+          <Button
+            onPress={goToPassRecovery}
+            style={style.buttonEsq}
+            mode="contained"
+            labelStyle={{fontFamily: 'AveriaLibre-Regular', color: '#FFFFFF'}}>
             Esqueci minha senha
           </Button>
         </View>
-
-
-
       </View>
     </PaperProvider>
-  )
-}
+  );
+};
 
 const style = StyleSheet.create({
-  text:{
+  text: {
     fontFamily: 'AveriaLibre-Regular',
     color: '#FD7979',
-    fontSize: 20
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: 8,
   },
   background: {
     backgroundColor: '#372775',
-    flex:1,
+    flex: 1,
     paddingHorizontal: 100,
     paddingVertical: 10,
     flexDirection: 'column',
   },
-  txtLogo:{
+  txtLogo: {
     fontSize: 36,
     color: 'white',
-    fontFamily: 'AveriaLibre-Regular'
+    fontFamily: 'AveriaLibre-Regular',
   },
-  ctLogo:{
+  ctLogo: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     //marginVertical: 0
   },
-  icon:{
-    marginLeft: 30
+  icon: {
+    marginLeft: 30,
   },
-  ctInput:{
-    marginBottom: 10
+  ctInput: {
+    marginBottom: 10,
   },
-  ctButtons:{
+  ctButtons: {
     height: 90,
     //flexDirection: 'column',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
-  btCriar:{
-    marginBottom: 5
+  btCriar: {
+    marginBottom: 5,
   },
   buttonEntrar: {
     borderRadius: 0,
     fontFamily: 'AveriaLibre-Regular',
-    backgroundColor: '#37BD6D'
+    backgroundColor: '#37BD6D',
   },
-  buttonCriar:{
+  buttonCriar: {
     borderRadius: 0,
     fontFamily: 'AveriaLibre-Regular',
-    backgroundColor: '#419ED7'
+    backgroundColor: '#419ED7',
   },
-  buttonEsq:{
+  buttonEsq: {
     borderRadius: 0,
     fontFamily: 'AveriaLibre-Regular',
-    backgroundColor: '#B0CCDE'
-  }
-  
-})
+    backgroundColor: '#B0CCDE',
+  },
+});
 
 export default Login;

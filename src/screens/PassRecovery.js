@@ -2,8 +2,7 @@ import {View, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import {Text, Button} from 'react-native-paper';
 import Input from '../components/Input';
-import {auth_mod} from '../firebase/config';
-import {sendPasswordResetEmail} from 'firebase/auth';
+import auth from '@react-native-firebase/auth';
 
 const PassRecovery = () => {
   const [email, setEmail] = useState('');
@@ -19,7 +18,8 @@ const PassRecovery = () => {
     if (validateEmail(email)) {
       setError(false);
 
-      sendPasswordResetEmail(auth_mod, email)
+      auth()
+        .sendPasswordResetEmail(email)
         .then(() => {
           setResponse(
             'O email para recuperação de senha foi enviado para sua caixa de entrada!',
@@ -46,7 +46,11 @@ const PassRecovery = () => {
           errorMessage={error && 'E-mail parece ser inválido'}
         />
       </View>
-      {response ? <Text style={styles.response}>{response}</Text> : <Text></Text>}
+      {response ? (
+        <Text style={styles.response}>{response}</Text>
+      ) : (
+        <Text></Text>
+      )}
       <View style={styles.ctButton}>
         <Button
           onPress={recovery}

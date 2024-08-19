@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {Text, Button} from 'react-native-paper';
+import {Button} from 'react-native-paper';
 import Input from '../components/Input';
-import {auth_mod} from '../firebase/config';
-import {createUserWithEmailAndPassword} from 'firebase/auth';
+import auth from '@react-native-firebase/auth';
 
 const NewAcount = props => {
   const [email, setEmail] = useState('');
@@ -33,11 +32,13 @@ const NewAcount = props => {
   };
 
   const registerUser = () => {
-    createUserWithEmailAndPassword(auth_mod, email, password)
+    auth()
+      .createUserWithEmailAndPassword(email, password)
       .then(() => {
         goToHome();
       })
       .catch(err => {
+        console.log(err);
         setErrorMessage(err.customData['_tokenResponse'].error.message);
       });
   };

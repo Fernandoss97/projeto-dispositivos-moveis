@@ -1,24 +1,48 @@
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Pressable} from 'react-native';
 import React, {useState} from 'react';
-import {TextInput, Text, Button} from 'react-native-paper';
+import {TextInput, Text, Button, Snackbar} from 'react-native-paper';
 import Input from '../components/Input';
+import firestore from '@react-native-firebase/firestore';
+import {useNavigation} from '@react-navigation/native';
+import {launchCamera} from 'react-native-image-picker';
 
 const NewSurvey = () => {
   const [name, setName] = useState('');
   const [date, setDate] = useState('');
+  const [base64, setBase64] = useState(null);
   const [nameError, setNameError] = useState(false);
   const [dateError, setDateError] = useState(false);
+  const navigation = useNavigation();
+  const [visible, setVisible] = React.useState(false);
+
+  const onDismissSnackBar = () => setVisible(false);
 
   const register = () => {
+    let hasError = false;
     if (date.length > 0) {
       setDateError(false);
     } else {
       setDateError(true);
+      hasError = true;
     }
     if (name.length > 0) {
       setNameError(false);
     } else {
       setNameError(true);
+      hasError = true;
+    }
+
+    if (!hasError) {
+      firestore()
+        .collection('survey')
+        .add({
+          name,
+          date,
+          base64,
+        })
+        .then(() => {
+          setVisible(true);
+        });
     }
   };
   return (
@@ -42,11 +66,29 @@ const NewSurvey = () => {
         </View>
 
         <Text style={styles.textImg}>Imagem</Text>
-        <TextInput
-          style={styles.inputImg}
-          placeholder="Câmera/Galeria de imagens"
-          placeholderStyle={styles.placeholderStyle}
-        />
+        <Pressable
+          onPress={async () => {
+            const result = await launchCamera({
+              includeBase64: true,
+              quality: 0.2,
+            });
+            if (result.didCancel || result.error) {
+              return;
+            }
+
+            if ((result.assets?.length ?? 0) > 0 && result.assets[0].base64) {
+              //Here is my base64 string of assets[0]
+              setBase64(result.assets[0].base64);
+            }
+          }}>
+          <View pointerEvents="none">
+            <TextInput
+              style={styles.inputImg}
+              placeholder="Câmera/Galeria de imagens"
+              placeholderStyle={styles.placeholderStyle}
+            />
+          </View>
+        </Pressable>
         <Button
           onPress={register}
           style={styles.buttonRec}
@@ -55,6 +97,18 @@ const NewSurvey = () => {
           CADASTRAR
         </Button>
       </View>
+      <Snackbar
+        style={{backgroundColor: 'green'}}
+        visible={visible}
+        onDismiss={onDismissSnackBar}
+        action={{
+          label: 'ok',
+          onPress: () => {
+            navigation.goBack();
+          },
+        }}>
+        Adicionado com sucesso!
+      </Snackbar>
     </View>
   );
 };
@@ -116,6 +170,11 @@ const styles = StyleSheet.create({
     fontFamily: 'AveriaLibre-Regular',
     fontSize: 15,
     color: 'white',
+  },
+
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
   },
 });
 

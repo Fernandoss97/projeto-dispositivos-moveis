@@ -1,25 +1,45 @@
-import {View, StyleSheet} from 'react-native';
+import {View, Pressable, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import {TextInput, Text, Button} from 'react-native-paper';
 import Input from '../components/Input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
+import {launchCamera} from 'react-native-image-picker';
 
 const NewSurvey = () => {
-  const [name, setName] = useState('');
-  const [date, setDate] = useState('');
+  const {params} = useRoute();
+  const navigation = useNavigation();
+
+  const [name, setName] = useState(params.name);
+  const [date, setDate] = useState(params.date);
+  const [base64, setBase64] = useState(params.base64 || null);
+
   const [nameError, setNameError] = useState(false);
   const [dateError, setDateError] = useState(false);
 
   const register = () => {
+    let hasError = false;
     if (date.length > 0) {
       setDateError(false);
     } else {
+      hasError = true;
       setDateError(true);
     }
     if (name.length > 0) {
       setNameError(false);
     } else {
+      hasError = true;
       setNameError(true);
+    }
+    if (!hasError) {
+      firestore()
+        .collection('survey')
+        .doc(params.id)
+        .set({name, date, base64})
+        .then(() => {
+          navigation.navigate('Home');
+        });
     }
   };
   return (
@@ -43,11 +63,30 @@ const NewSurvey = () => {
         </View>
 
         <Text style={styles.textImg}>Imagem</Text>
-        <TextInput
-          style={styles.inputImg}
-          placeholder="Câmera/Galeria de imagens"
-          placeholderStyle={styles.placeholderStyle}
-        />
+        <Pressable
+          onPress={async () => {
+            const result = await launchCamera({
+              includeBase64: true,
+              quality: 0.2,
+            });
+            console.log({result: result.assets});
+            if (result.didCancel || result.error) {
+              return;
+            }
+
+            if ((result.assets?.length ?? 0) > 0 && result.assets[0].base64) {
+              //Here is my base64 string of assets[0]
+              setBase64(result.assets[0].base64);
+            }
+          }}>
+          <View pointerEvents="none">
+            <TextInput
+              style={styles.inputImg}
+              placeholder="Câmera/Galeria de imagens"
+              placeholderStyle={styles.placeholderStyle}
+            />
+          </View>
+        </Pressable>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <View style={{flex: 1}}>
             <Button
@@ -58,10 +97,20 @@ const NewSurvey = () => {
                 fontFamily: 'AveriaLibre-Regular',
                 color: '#FFFFFF',
               }}>
-              CADASTRAR
+              Atualizar
             </Button>
           </View>
-          <View style={{alignItems: 'center', marginLeft: 8}}>
+          <View
+            onTouchEnd={() => {
+              firestore()
+                .collection('survey')
+                .doc(params.id)
+                .delete()
+                .then(() => {
+                  navigation.navigate('Home');
+                });
+            }}
+            style={{alignItems: 'center', marginLeft: 8}}>
             <Icon
               style={styles.iconDelete}
               name="delete"

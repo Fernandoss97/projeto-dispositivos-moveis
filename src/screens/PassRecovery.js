@@ -2,10 +2,12 @@ import {View, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import {Text, Button} from 'react-native-paper';
 import Input from '../components/Input';
+import {auth_mod} from '../firebase/config';
+import {sendPasswordResetEmail} from 'firebase/auth';
 
 const PassRecovery = () => {
   const [email, setEmail] = useState('');
-
+  const [response, setResponse] = useState('');
   const [error, setError] = useState(false);
 
   const validateEmail = value => {
@@ -16,8 +18,20 @@ const PassRecovery = () => {
   const recovery = () => {
     if (validateEmail(email)) {
       setError(false);
+
+      sendPasswordResetEmail(auth_mod, email)
+        .then(() => {
+          setResponse(
+            'O email para recuperação de senha foi enviado para sua caixa de entrada!',
+          );
+        })
+        .catch(err => {
+          setError(err.code);
+          setResponse('');
+        });
     } else {
       setError(true);
+      setResponse('');
     }
   };
 
@@ -32,6 +46,7 @@ const PassRecovery = () => {
           errorMessage={error && 'E-mail parece ser inválido'}
         />
       </View>
+      {response ? <Text style={styles.response}>{response}</Text> : <Text></Text>}
       <View style={styles.ctButton}>
         <Button
           onPress={recovery}
@@ -62,6 +77,11 @@ const styles = StyleSheet.create({
     fontFamily: 'AveriaLibre-Regular',
     color: '#FD7979',
     fontSize: 20,
+  },
+  response: {
+    fontFamily: 'AveriaLibre-Regular',
+    color: '#03fc28',
+    fontSize: 18,
   },
   buttonRec: {
     borderRadius: 0,

@@ -9,6 +9,10 @@ import {
 import {Text, Button} from 'react-native-paper';
 import Input from '../components/Input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {auth_mod} from '../firebase/config';
+import {signInWithEmailAndPassword} from 'firebase/auth';
+import {useDispatch} from 'react-redux';
+import {reducerSetLogin} from '../redux/loginSlice';
 
 const Login = props => {
   const [email, setEmail] = useState('');
@@ -43,6 +47,15 @@ const Login = props => {
     return value.length > 0;
   };
 
+  const dispatch = useDispatch();
+
+  const authenticate = () => {
+    signInWithEmailAndPassword(auth_mod, email, password).then(() => {
+      dispatch(reducerSetLogin({email: email, password: password}));
+      goToHome();
+    });
+  };
+
   return (
     <KeyboardAvoidingView style={{flex: 1}}>
       <Pressable style={style.background} onPress={Keyboard.dismiss}>
@@ -63,11 +76,14 @@ const Login = props => {
             onChangeText={value => setPassword(value)}
             value={password}
             errorMessage={error && 'E-mail e/ou senha inválidos.'}
+            typePassword={true}
           />
+
+          {error ? <Text style={style.text}>{error}</Text> : <Text></Text>}
 
           <Button
             style={style.buttonEntrar}
-            onPress={goToHome}
+            onPress={authenticate}
             mode="contained"
             labelStyle={{fontFamily: 'AveriaLibre-Regular', color: '#FFFFFF'}}>
             Entrar

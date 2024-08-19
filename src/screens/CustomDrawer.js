@@ -5,15 +5,16 @@ import {
   DrawerItemList,
 } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {auth_mod} from '../firebase/config';
-import {signOut} from 'firebase/auth';
+import auth from '@react-native-firebase/auth';
+
 import {useSelector} from 'react-redux';
 
 const CustomDrawer = props => {
   const userEmail = useSelector(state => state.login.email);
 
   const handleSignOut = () => {
-    signOut(auth_mod)
+    auth()
+      .signOut()
       .then(() => {
         console.log('Usuário desconectado com sucesso!');
       })

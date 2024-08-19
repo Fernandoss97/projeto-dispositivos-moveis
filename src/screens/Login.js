@@ -9,8 +9,9 @@ import {
 import {Text, Button} from 'react-native-paper';
 import Input from '../components/Input';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {auth_mod} from '../firebase/config';
-import {signInWithEmailAndPassword} from 'firebase/auth';
+
+import auth from '@react-native-firebase/auth';
+
 import {useDispatch} from 'react-redux';
 import {reducerSetLogin} from '../redux/loginSlice';
 
@@ -50,10 +51,12 @@ const Login = props => {
   const dispatch = useDispatch();
 
   const authenticate = () => {
-    signInWithEmailAndPassword(auth_mod, email, password).then(() => {
-      dispatch(reducerSetLogin({email: email, password: password}));
-      goToHome();
-    });
+    auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        dispatch(reducerSetLogin({email: email, password: password}));
+        goToHome();
+      });
   };
 
   return (

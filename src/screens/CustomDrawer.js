@@ -12,10 +12,6 @@ import {useSelector} from 'react-redux';
 const CustomDrawer = props => {
   const userEmail = useSelector(state => state.login.email);
 
-  const goToHome = () => {
-    props.navigation.navigate('Home');
-  };
-
   const handleSignOut = () => {
     signOut(auth_mod)
       .then(() => {
@@ -40,9 +36,7 @@ const CustomDrawer = props => {
 
         <DrawerItem
           onPress={handleSignOut}
-          icon={({color, size}) => (
-            <Icon name="description" size={40} color="#FFFFFF" />
-          )}
+          icon={() => <Icon name="description" size={40} color="#FFFFFF" />}
           label="Pesquisas"
           labelStyle={{
             fontFamily: 'AveriaLibre-Regular',
@@ -53,11 +47,9 @@ const CustomDrawer = props => {
 
         <View style={styles.ctFooter}>
           <DrawerItem
-            onPress={goToHome}
+            onPress={handleSignOut}
             style={styles.btSair}
-            icon={({color, size}) => (
-              <Icon name="logout" size={40} color="#FFFFFF" />
-            )}
+            icon={() => <Icon name="logout" size={40} color="#FFFFFF" />}
             label="Sair"
             labelStyle={{
               fontFamily: 'AveriaLibre-Regular',

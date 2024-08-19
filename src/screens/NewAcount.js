@@ -27,7 +27,7 @@ const NewAcount = props => {
     } else if (!validateTwoPasswords(password, confirmPassword)) {
       setErrorMessage('O campo repetir senha difere da senha.');
     } else {
-      props.navigation.navigate('Drawer');
+      props.navigation.navigate('Login');
       setErrorMessage('');
     }
   };

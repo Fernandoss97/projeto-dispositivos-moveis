@@ -1,48 +1,48 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { PieChart } from 'react-native-svg-charts';
-import { Text } from 'react-native-paper';
+import {View, StyleSheet} from 'react-native';
+// import { PieChart } from 'react-native-svg-charts';
+import {Text} from 'react-native-paper';
 
 const Reports = () => {
   const data = [
     {
       key: 'Péssimo',
       value: 10,
-      svg: { fill: '#F1CE7E' },
-      arc: { outerRadius: '120%', cornerRadius: 0 },
+      svg: {fill: '#F1CE7E'},
+      arc: {outerRadius: '120%', cornerRadius: 0},
     },
     {
       key: 'Ruim',
       value: 10,
-      svg: { fill: '#6994FE' },
+      svg: {fill: '#6994FE'},
     },
     {
       key: 'Neutro',
       value: 20,
-      svg: { fill: '#5FCDA4' },
+      svg: {fill: '#5FCDA4'},
     },
     {
       key: 'Bom',
       value: 30,
-      svg: { fill: '#EA7288' },
+      svg: {fill: '#EA7288'},
     },
     {
       key: 'Excelente',
       value: 10,
-      svg: { fill: '#53D8D8' },
+      svg: {fill: '#53D8D8'},
     },
   ];
 
   return (
     <View style={styles.ctBackground}>
       <Text style={styles.title}>Relatório de Gráficos</Text>
-      <View style={{ flexDirection: 'row' }}>
-        <PieChart
+      <View style={{flexDirection: 'row'}}>
+        {/* <PieChart
           style={{ height: 300, width: 300 }}
           outerRadius={'80%'}
           innerRadius={5}
           data={data}
-        />
+        /> */}
         <View>
           <Text>Péssimo</Text>
           <Text>Ruim</Text>

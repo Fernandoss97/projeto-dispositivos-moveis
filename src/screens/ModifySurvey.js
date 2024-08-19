@@ -13,7 +13,7 @@ const NewSurvey = () => {
 
   const [name, setName] = useState(params.name);
   const [date, setDate] = useState(params.date);
-  const [base64, setBase64] = useState(params.base64);
+  const [base64, setBase64] = useState(params.base64 || null);
 
   const [nameError, setNameError] = useState(false);
   const [dateError, setDateError] = useState(false);

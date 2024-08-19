@@ -20,7 +20,7 @@ const Actions = props => {
 
   useEffect(() => {
     setOptions({title: params.name});
-  });
+  }, []);
   return (
     <View style={styles.ctBackground}>
       <View

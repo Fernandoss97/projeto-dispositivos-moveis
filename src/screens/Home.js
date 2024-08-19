@@ -79,7 +79,11 @@ const Home = props => {
                     title={item.name}
                     date={item.date}
                     style={{marginRight: 16}}
-                    imageUrl="https://techservices.illinois.edu/wp-content/uploads/2021/08/computer-lab-icon-2-1024x1024.jpg"
+                    imageUrl={
+                      item.base64
+                        ? `data:image/png;base64,${item.base64}`
+                        : 'https://techservices.illinois.edu/wp-content/uploads/2021/08/computer-lab-icon-2-1024x1024.jpg'
+                    }
                   />
                 </TouchableOpacity>
               );
